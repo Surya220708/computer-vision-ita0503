@@ -2,7 +2,7 @@ import os
 import cv2
 import numpy as np
 
-os.makedirs("observation_results", exist_ok=True)
+os.makedirs("output", exist_ok=True)
 
 # Helper function to create an observation record card image
 def make_observation_card(exp_num, title, aim, input_img, output_img, result_text, input_label="INPUT IMAGE", output_label="OUTPUT RESULT"):
@@ -62,7 +62,7 @@ def make_observation_card(exp_num, title, aim, input_img, output_img, result_tex
         res_text_line = res_text_line[:82] + "..."
     cv2.putText(card, res_text_line, (160, res_y + 40), cv2.FONT_HERSHEY_SIMPLEX, 0.62, (30, 30, 30), 2, cv2.LINE_AA)
 
-    out_filename = f"observation_results/exp_{exp_num:02d}_result.png"
+    out_filename = f"output/exp_{exp_num:02d}_result.png"
     cv2.imwrite(out_filename, card)
     print(f"Generated {out_filename}")
 
@@ -534,4 +534,4 @@ make_observation_card(40, "Extract Text from Videos",
                       f40, ocr_card, "Successfully extracted digital text strings from video frames using OCR.",
                       input_label="VIDEO FRAME (WITH TEXT)", output_label="OCR EXTRACTED TEXT LOG")
 
-print("\nAll 40 observation screenshot cards generated in 'observation_results/' folder successfully!")
+print("\nAll 40 observation screenshot cards generated in 'output/' folder successfully!")

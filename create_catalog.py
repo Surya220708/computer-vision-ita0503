@@ -50,17 +50,17 @@ with open('OBSERVATION_RESULTS.md', 'w', encoding='utf-8') as md:
     md.write('| Exp No | Experiment Title | Python Program | Observation Screenshot |\n')
     md.write('|:---:|:---|:---|:---:|\n')
     for i in range(1, 41):
-        py_files = [f for f in os.listdir('.') if f.startswith(f'program_{i:02d}')]
+        py_files = [f for f in os.listdir('program') if f.startswith(f'program_{i:02d}')]
         py_name = py_files[0] if py_files else f'program_{i:02d}.py'
-        img_rel = f'observation_results/exp_{i:02d}_result.png'
-        md.write(f'| {i} | {titles[i-1]} | [{py_name}](file:///d:/computer%20vision/{py_name}) | [View Screenshot](file:///d:/computer%20vision/{img_rel}) |\n')
+        img_rel = f'output/exp_{i:02d}_result.png'
+        md.write(f'| {i} | {titles[i-1]} | [{py_name}](file:///d:/computer%20vision/program/{py_name}) | [View Screenshot](file:///d:/computer%20vision/{img_rel}) |\n')
     md.write('\n## Gallery of Observation Cards\n\n')
     for i in range(1, 41):
         md.write(f'### Experiment {i}: {titles[i-1]}\n')
-        md.write(f'![Exp {i} Observation Screenshot](file:///d:/computer%20vision/observation_results/exp_{i:02d}_result.png)\n\n---\n\n')
+        md.write(f'![Exp {i} Observation Screenshot](file:///d:/computer%20vision/output/exp_{i:02d}_result.png)\n\n---\n\n')
 
 # Generate interactive HTML Gallery
-with open('observation_results/index.html', 'w', encoding='utf-8') as html:
+with open('output/index.html', 'w', encoding='utf-8') as html:
     html.write('''<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -89,4 +89,4 @@ with open('observation_results/index.html', 'w', encoding='utf-8') as html:
   </div>\n''')
     html.write('''</div>\n</body>\n</html>''')
 
-print('Generated OBSERVATION_RESULTS.md and observation_results/index.html successfully!')
+print('Generated OBSERVATION_RESULTS.md and output/index.html successfully!')

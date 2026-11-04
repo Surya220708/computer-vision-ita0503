@@ -7,19 +7,37 @@ Aim: To read an image and apply Gaussian Blur using OpenCV in Python.
 import cv2
 import os
 
-image_path = "sample.jpg"
-if not os.path.exists("input_image.jpg"):
-    image_path = "image.jpg"
+def resolve_path(filename):
+    """Find file in current dir, parent dir, or script dir."""
+    base_dir = os.path.dirname(__file__) if "__file__" in globals() else "."
+    for p in [filename, os.path.join("..", filename),
+             os.path.join(base_dir, "..", filename),
+             os.path.join(base_dir, filename)]:
+        if os.path.exists(p):
+            return p
+    return filename
+
+def get_output_path(filename):
+    """Return path inside output folder if available."""
+    base_dir = os.path.dirname(__file__) if "__file__" in globals() else "."
+    for d in ["output", os.path.join("..", "output"),
+             os.path.join(base_dir, "..", "output")]:
+        if os.path.isdir(d):
+            return os.path.join(d, filename)
+    return filename
+
+
+image_path = resolve_path("sample.jpg")
+if not os.path.exists(image_path):
+    image_path = resolve_path("image.jpg")
 
 image = cv2.imread(image_path)
 if image is None:
     print(f"Error: Could not load image from {image_path}")
 else:
-    # Apply Gaussian Blur with a 15x15 kernel
     blurred_image = cv2.GaussianBlur(image, (15, 15), 0)
-
-    # Display original and blurred images
     cv2.imshow("Original Image", image)
     cv2.imshow("Blurred Image", blurred_image)
+    cv2.imwrite(get_output_path("blurred_image.jpg"), blurred_image)
     cv2.waitKey(0)
     cv2.destroyAllWindows()

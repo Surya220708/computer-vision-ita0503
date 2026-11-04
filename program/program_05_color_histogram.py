@@ -1,36 +1,51 @@
 """
 EXPERIMENT 5
-Title: Analyze the Histogram of an Input Image Based on Color Levels
-Aim: To write a Python function to analyze and display the histogram of an image based on color levels using OpenCV.
+Title: Analyze Histogram of Image based on Color Levels
+Aim: To write a Python function to analyze the histogram of a given input image based on color levels using OpenCV.
 """
 
 import cv2
 import numpy as np
-import matplotlib.pyplot as plt
 import os
 
-def analyze_histogram(image_path):
-    if not os.path.exists(image_path):
-        image_path = "sample.jpg"
-    image = cv2.imread(image_path)
-    if image is None:
-        print(f"Error: Could not load image from {image_path}")
-        return
+def resolve_path(filename):
+    """Find file in current dir, parent dir, or script dir."""
+    base_dir = os.path.dirname(__file__) if "__file__" in globals() else "."
+    for p in [filename, os.path.join("..", filename),
+             os.path.join(base_dir, "..", filename),
+             os.path.join(base_dir, filename)]:
+        if os.path.exists(p):
+            return p
+    return filename
 
-    color_channels = ('b', 'g', 'r')
-    plt.figure(figsize=(10, 5))
+def get_output_path(filename):
+    """Return path inside output folder if available."""
+    base_dir = os.path.dirname(__file__) if "__file__" in globals() else "."
+    for d in ["output", os.path.join("..", "output"),
+             os.path.join(base_dir, "..", "output")]:
+        if os.path.isdir(d):
+            return os.path.join(d, filename)
+    return filename
 
-    for i, color in enumerate(color_channels):
-        histogram = cv2.calcHist([image], [i], None, [256], [0, 256])
-        plt.plot(histogram, color=color, label=f"{color.upper()} Channel")
-        plt.xlim([0, 256])
 
-    plt.title("Color Histogram Analysis")
-    plt.xlabel("Pixel Intensity")
-    plt.ylabel("Frequency")
-    plt.legend()
-    plt.grid(True, linestyle="--", alpha=0.6)
-    plt.show()
+image_path = resolve_path("sample.jpg")
+if not os.path.exists(image_path):
+    image_path = resolve_path("image.jpg")
 
-if __name__ == "__main__":
-    analyze_histogram("sample.jpg")
+image = cv2.imread(image_path)
+if image is None:
+    print(f"Error: Could not load image from {image_path}")
+else:
+    hist_canvas = np.ones((400, 500, 3), dtype=np.uint8) * 255
+    colors = ('b', 'g', 'r')
+    for i, col in enumerate(colors):
+        hist = cv2.calcHist([image], [i], None, [256], [0, 256])
+        cv2.normalize(hist, hist, 0, 350, cv2.NORM_MINMAX)
+        pts = np.int32(np.column_stack((np.linspace(20, 480, 256), 380 - hist.flatten())))
+        bgr = (255, 0, 0) if col == 'b' else ((0, 255, 0) if col == 'g' else (0, 0, 255))
+        cv2.polylines(hist_canvas, [pts], False, bgr, 2)
+    cv2.imshow("Original Image", image)
+    cv2.imshow("Color Histogram Distribution", hist_canvas)
+    cv2.imwrite(get_output_path("color_histogram.jpg"), hist_canvas)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
