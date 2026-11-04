@@ -4,6 +4,12 @@ import numpy as np
 
 os.makedirs("output", exist_ok=True)
 
+def get_input(filename):
+    for p in [filename, os.path.join("input", filename), os.path.join("..", "input", filename)]:
+        if os.path.exists(p):
+            return p
+    return filename
+
 # Helper function to create an observation record card image
 def make_observation_card(exp_num, title, aim, input_img, output_img, result_text, input_label="INPUT IMAGE", output_label="OUTPUT RESULT"):
     card_w, card_h = 1200, 750
@@ -67,7 +73,7 @@ def make_observation_card(exp_num, title, aim, input_img, output_img, result_tex
     print(f"Generated {out_filename}")
 
 # Load Base Samples for Exp 1-10
-sample_img = cv2.imread("sample.jpg") if os.path.exists("sample.jpg") else np.ones((400, 500, 3), dtype=np.uint8)*180
+sample_img = cv2.imread(get_input("sample.jpg")) if os.path.exists(get_input("sample.jpg")) else np.ones((400, 500, 3), dtype=np.uint8)*180
 
 # ==============================================================================
 # EXP 1 to 10 (Preserved)
@@ -107,7 +113,7 @@ er6 = cv2.erode(sample_img, np.ones((5, 5), np.uint8), iterations=1)
 make_observation_card(6, "Image Erosion", "To erode boundaries of foreground regions using cv2.erode.",
                       sample_img, er6, "Successfully eroded object boundaries using 5x5 kernel.")
 
-cap7 = cv2.VideoCapture("video.mp4" if os.path.exists("video.mp4") else "input_video.mp4")
+cap7 = cv2.VideoCapture(get_input("video.mp4") if os.path.exists(get_input("video.mp4")) else get_input("input_video.mp4"))
 ret7, f7 = cap7.read()
 cap7.release()
 f7_fast = f7.copy()
@@ -134,7 +140,7 @@ make_observation_card(10, "90-Degree Clockwise Rotation", "To perform 90-degree 
 # ==============================================================================
 
 # EXP 11: 180-degree Rotation
-img11 = cv2.imread("sample_exp11_rotate180.jpg")
+img11 = cv2.imread(get_input("sample_exp11_rotate180.jpg"))
 flip11 = cv2.flip(img11, 1)
 r11 = cv2.rotate(flip11, cv2.ROTATE_180)
 make_observation_card(11, "180-Degree Clockwise Rotation along Y-Axis",
@@ -142,7 +148,7 @@ make_observation_card(11, "180-Degree Clockwise Rotation along Y-Axis",
                       img11, r11, "Successfully flipped along Y-axis and rotated 180 degrees clockwise.")
 
 # EXP 12: 270-degree Rotation
-img12 = cv2.imread("sample_exp12_rotate270.jpg")
+img12 = cv2.imread(get_input("sample_exp12_rotate270.jpg"))
 flip12 = cv2.flip(img12, 1)
 r12 = cv2.rotate(flip12, cv2.ROTATE_90_COUNTERCLOCKWISE)
 make_observation_card(12, "270-Degree Clockwise Rotation along Y-Axis",
@@ -150,7 +156,7 @@ make_observation_card(12, "270-Degree Clockwise Rotation along Y-Axis",
                       img12, r12, "Successfully flipped along Y-axis and rotated 270 degrees clockwise.")
 
 # EXP 13: Affine Transformation
-img13 = cv2.imread("sample_exp13_affine.jpg")
+img13 = cv2.imread(get_input("sample_exp13_affine.jpg"))
 rows13, cols13 = img13.shape[:2]
 pts1_13 = np.float32([[50, 50], [200, 50], [50, 200]])
 pts2_13 = np.float32([[10, 100], [200, 50], [100, 250]])
@@ -161,7 +167,7 @@ make_observation_card(13, "Affine Transformation",
                       img13, affine13, "Successfully computed affine matrix and mapped image points using cv2.warpAffine.")
 
 # EXP 14: Perspective Transformation
-img14 = cv2.imread("sample_exp14_perspective.jpg")
+img14 = cv2.imread(get_input("sample_exp14_perspective.jpg"))
 rows14, cols14 = img14.shape[:2]
 pts1_14 = np.float32([[50, 50], [cols14 - 50, 50], [50, rows14 - 50], [cols14 - 50, rows14 - 50]])
 pts2_14 = np.float32([[10, 80], [cols14 - 80, 20], [80, rows14 - 20], [cols14 - 20, rows14 - 80]])
@@ -172,7 +178,7 @@ make_observation_card(14, "Perspective Transformation",
                       img14, persp14, "Successfully applied perspective transformation using cv2.warpPerspective.")
 
 # EXP 15: Harris Corner Detection
-img15 = cv2.imread("sample_exp15_harris.jpg")
+img15 = cv2.imread(get_input("sample_exp15_harris.jpg"))
 harris15 = img15.copy()
 g15 = np.float32(cv2.cvtColor(img15, cv2.COLOR_BGR2GRAY))
 corners15 = cv2.cornerHarris(g15, 2, 3, 0.04)
@@ -183,7 +189,7 @@ make_observation_card(15, "Harris Corner Detection",
                       img15, harris15, "Successfully detected and highlighted chessboard corners in red.")
 
 # EXP 16: Sobel Edge Detection
-img16 = cv2.imread("sample_exp16_sobel.jpg")
+img16 = cv2.imread(get_input("sample_exp16_sobel.jpg"))
 g16 = cv2.cvtColor(img16, cv2.COLOR_BGR2GRAY)
 sx16 = cv2.convertScaleAbs(cv2.Sobel(g16, cv2.CV_64F, 1, 0, ksize=3))
 sy16 = cv2.convertScaleAbs(cv2.Sobel(g16, cv2.CV_64F, 0, 1, ksize=3))
@@ -193,7 +199,7 @@ make_observation_card(16, "Sobel Edge Detection Filter",
                       img16, sobel16, "Successfully filtered image using horizontal and vertical Sobel gradient kernels.")
 
 # EXP 17: Watermarking
-img17 = cv2.imread("sample_exp17_watermark.jpg")
+img17 = cv2.imread(get_input("sample_exp17_watermark.jpg"))
 wm17 = img17.copy()
 h17, w17 = wm17.shape[:2]
 ov17 = wm17.copy()
@@ -207,7 +213,7 @@ make_observation_card(17, "Image Watermarking Technique",
                       img17, wm17, "Successfully inserted translucent protective watermark into scenery photograph.")
 
 # EXP 18: Crop Copy Paste ROI
-img18 = cv2.imread("sample_exp18_roi.jpg")
+img18 = cv2.imread(get_input("sample_exp18_roi.jpg"))
 h18, w18 = img18.shape[:2]
 y1_18, y2_18 = int(h18 * 0.25), int(h18 * 0.75)
 x1_18, x2_18 = int(w18 * 0.25), int(w18 * 0.75)
@@ -223,7 +229,7 @@ make_observation_card(18, "Image ROI Crop, Copy & Paste",
                       img18, res18, "Successfully cropped ROI (green box) and pasted into destination position (red box).")
 
 # EXP 19: Morphological Erosion
-img19 = cv2.imread("sample_exp19_erosion.jpg")
+img19 = cv2.imread(get_input("sample_exp19_erosion.jpg"))
 _, bin19 = cv2.threshold(cv2.cvtColor(img19, cv2.COLOR_BGR2GRAY), 127, 255, cv2.THRESH_BINARY)
 er19 = cv2.erode(bin19, np.ones((5, 5), np.uint8), iterations=1)
 make_observation_card(19, "Morphological Erosion Technique",
@@ -232,7 +238,7 @@ make_observation_card(19, "Morphological Erosion Technique",
                       input_label="BINARY STOP SIGN", output_label="ERODED BINARY IMAGE")
 
 # EXP 20: Morphological Dilation
-img20 = cv2.imread("sample_exp20_dilation.jpg")
+img20 = cv2.imread(get_input("sample_exp20_dilation.jpg"))
 _, bin20 = cv2.threshold(cv2.cvtColor(img20, cv2.COLOR_BGR2GRAY), 127, 255, cv2.THRESH_BINARY)
 dil20 = cv2.dilate(bin20, np.ones((5, 5), np.uint8), iterations=1)
 make_observation_card(20, "Morphological Dilation Technique",
@@ -241,7 +247,7 @@ make_observation_card(20, "Morphological Dilation Technique",
                       input_label="BINARY MANUSCRIPT", output_label="DILATED BINARY IMAGE")
 
 # EXP 21: Morphological Opening
-img21 = cv2.imread("sample_exp21_opening.jpg")
+img21 = cv2.imread(get_input("sample_exp21_opening.jpg"))
 g21 = cv2.cvtColor(img21, cv2.COLOR_BGR2GRAY)
 op21 = cv2.morphologyEx(g21, cv2.MORPH_OPEN, np.ones((5, 5), np.uint8))
 make_observation_card(21, "Morphological Opening Technique",
@@ -249,7 +255,7 @@ make_observation_card(21, "Morphological Opening Technique",
                       img21, op21, "Successfully removed small foreground noise while preserving structural components.")
 
 # EXP 22: Morphological Closing
-img22 = cv2.imread("sample_exp22_closing.jpg")
+img22 = cv2.imread(get_input("sample_exp22_closing.jpg"))
 g22 = cv2.cvtColor(img22, cv2.COLOR_BGR2GRAY)
 cl22 = cv2.morphologyEx(g22, cv2.MORPH_CLOSE, np.ones((5, 5), np.uint8))
 make_observation_card(22, "Morphological Closing Technique",
@@ -257,7 +263,7 @@ make_observation_card(22, "Morphological Closing Technique",
                       img22, cl22, "Successfully filled small holes and gaps in textured pavement image.")
 
 # EXP 23: Morphological Top Hat
-img23 = cv2.imread("sample_exp23_tophat.jpg")
+img23 = cv2.imread(get_input("sample_exp23_tophat.jpg"))
 g23 = cv2.cvtColor(img23, cv2.COLOR_BGR2GRAY)
 th23 = cv2.morphologyEx(g23, cv2.MORPH_TOPHAT, np.ones((5, 5), np.uint8))
 make_observation_card(23, "Morphological Top Hat Technique",
@@ -265,14 +271,14 @@ make_observation_card(23, "Morphological Top Hat Technique",
                       img23, th23, "Successfully isolated local bright star features using Top Hat transform.")
 
 # EXP 24: Morphological Black Hat
-img24 = cv2.imread("sample_exp24_blackhat.jpg", cv2.IMREAD_GRAYSCALE)
+img24 = cv2.imread(get_input("sample_exp24_blackhat.jpg"), cv2.IMREAD_GRAYSCALE)
 bh24 = cv2.morphologyEx(img24, cv2.MORPH_BLACKHAT, cv2.getStructuringElement(cv2.MORPH_RECT, (5, 5)))
 make_observation_card(24, "Morphological Black Hat Technique",
                       "To extract dark local structures and barcode elements from bright invoice background.",
                       img24, bh24, "Successfully isolated local dark barcode/text elements using Black Hat transform.")
 
 # EXP 25: Watch Object Recognition
-img25 = cv2.imread("sample_exp25_watch.jpg")
+img25 = cv2.imread(get_input("sample_exp25_watch.jpg"))
 watch25 = img25.copy()
 g25 = cv2.cvtColor(img25, cv2.COLOR_BGR2GRAY)
 circles25 = cv2.HoughCircles(cv2.GaussianBlur(g25, (9, 9), 2), cv2.HOUGH_GRADIENT, 1.2, 50, param1=50, param2=30, minRadius=20, maxRadius=250)
@@ -289,7 +295,7 @@ make_observation_card(25, "Watch Object Recognition",
                       img25, watch25, "Successfully detected circular watch dial and localized wristwatch.")
 
 # EXP 26: Reverse Frames of Video
-cap26 = cv2.VideoCapture("sample_exp26_reverse.mp4")
+cap26 = cv2.VideoCapture(get_input("sample_exp26_reverse.mp4"))
 ret26_1, f26_start = cap26.read()
 f26_end = f26_start.copy()
 while cap26.isOpened():
@@ -304,12 +310,12 @@ make_observation_card(26, "Reverse Frames of Video",
                       input_label="INITIAL FRAME (FORWARD)", output_label="FINAL FRAME (REVERSED START)")
 
 # EXP 27: Face Detection
-img27 = cv2.imread("sample_exp27_face.jpg")
+img27 = cv2.imread(get_input("sample_exp27_face.jpg"))
 face27 = img27.copy()
 h27, w27 = img27.shape[:2]
 # Using YuNet detector
-if hasattr(cv2, 'FaceDetectorYN_create') and os.path.exists("yunet.onnx"):
-    det27 = cv2.FaceDetectorYN_create("yunet.onnx", "", (w27, h27), score_threshold=0.4)
+if hasattr(cv2, 'FaceDetectorYN_create') and os.path.exists(get_input("yunet.onnx")):
+    det27 = cv2.FaceDetectorYN_create(get_input("yunet.onnx"), "", (w27, h27), score_threshold=0.4)
     _, f_res = det27.detect(img27)
     if f_res is not None:
         for f in f_res:
@@ -323,7 +329,7 @@ make_observation_card(27, "Human Face Detection",
                       img27, face27, "Successfully detected and bounded human face with high confidence.")
 
 # EXP 28: Vehicle Detection in Video
-cap28 = cv2.VideoCapture("sample_exp28_traffic.mp4")
+cap28 = cv2.VideoCapture(get_input("sample_exp28_traffic.mp4"))
 bg_sub28 = cv2.createBackgroundSubtractorMOG2(history=50, varThreshold=25)
 raw_frame28 = None
 veh28 = None
@@ -351,11 +357,11 @@ make_observation_card(28, "Vehicle Detection in Video",
                       input_label="HIGHWAY VIDEO STREAM", output_label="DETECTED VEHICLES")
 
 # EXP 29: Eye Detection
-img29 = cv2.imread("sample_exp29_eye.jpg")
+img29 = cv2.imread(get_input("sample_exp29_eye.jpg"))
 eye29 = img29.copy()
 h29, w29 = img29.shape[:2]
-if hasattr(cv2, 'FaceDetectorYN_create') and os.path.exists("yunet.onnx"):
-    det29 = cv2.FaceDetectorYN_create("yunet.onnx", "", (w29, h29), score_threshold=0.4)
+if hasattr(cv2, 'FaceDetectorYN_create') and os.path.exists(get_input("yunet.onnx")):
+    det29 = cv2.FaceDetectorYN_create(get_input("yunet.onnx"), "", (w29, h29), score_threshold=0.4)
     _, f_res29 = det29.detect(img29)
     if f_res29 is not None:
         for f in f_res29:
@@ -372,11 +378,11 @@ make_observation_card(29, "Human Eye Detection within Face ROI",
                       img29, eye29, "Successfully detected facial region (blue) and localized right/left eyes (green circles).")
 
 # EXP 30: Smile Detection
-img30 = cv2.imread("sample_exp30_smile.jpg")
+img30 = cv2.imread(get_input("sample_exp30_smile.jpg"))
 smile30 = img30.copy()
 h30, w30 = img30.shape[:2]
-if hasattr(cv2, 'FaceDetectorYN_create') and os.path.exists("yunet.onnx"):
-    det30 = cv2.FaceDetectorYN_create("yunet.onnx", "", (w30, h30), score_threshold=0.4)
+if hasattr(cv2, 'FaceDetectorYN_create') and os.path.exists(get_input("yunet.onnx")):
+    det30 = cv2.FaceDetectorYN_create(get_input("yunet.onnx"), "", (w30, h30), score_threshold=0.4)
     _, f_res30 = det30.detect(img30)
     if f_res30 is not None:
         for f in f_res30:
@@ -395,7 +401,7 @@ make_observation_card(30, "Human Smile Detection within Face ROI",
                       img30, smile30, "Successfully detected facial ROI (blue) and bound active smile region (red).")
 
 # EXP 31: Image Segmentation
-img31 = cv2.imread("sample_exp31_segment.jpg")
+img31 = cv2.imread(get_input("sample_exp31_segment.jpg"))
 g31 = cv2.cvtColor(img31, cv2.COLOR_BGR2GRAY)
 _, seg31 = cv2.threshold(g31, 130, 255, cv2.THRESH_BINARY)
 make_observation_card(31, "Image Segmentation by Thresholding",
@@ -440,7 +446,7 @@ make_observation_card(34, "Draw Circle on White Canvas",
                       input_label="WHITE CANVAS (500x400)", output_label="CANVAS WITH CIRCLE")
 
 # EXP 35: Add Text to Image
-img35 = cv2.imread("sample_exp35_text.jpg")
+img35 = cv2.imread(get_input("sample_exp35_text.jpg"))
 h35, w35 = 400, 600
 img35_res = cv2.resize(img35, (w35, h35))
 out35 = img35_res.copy()
@@ -456,7 +462,7 @@ make_observation_card(35, "Add User-Entered Text String on Image",
                       img35_res, out35, "Successfully rendered styled centered text banner on scenic background image.")
 
 # EXP 36: Subtract Background
-img36 = cv2.imread("sample_exp36_bg_sub.jpg")
+img36 = cv2.imread(get_input("sample_exp36_bg_sub.jpg"))
 hsv36 = cv2.cvtColor(img36, cv2.COLOR_BGR2HSV)
 m36 = cv2.inRange(hsv36, np.array([0, 0, 160]), np.array([180, 60, 255]))
 fg36 = cv2.bitwise_and(img36, img36, mask=cv2.bitwise_not(m36))
@@ -465,7 +471,7 @@ make_observation_card(36, "Subtract Background Based on Color",
                       img36, fg36, "Successfully removed neutral background, isolating vibrant red foreground apples.")
 
 # EXP 37: Subtract Foreground
-img37 = cv2.imread("sample_exp37_fg_sub.jpg")
+img37 = cv2.imread(get_input("sample_exp37_fg_sub.jpg"))
 hsv37 = cv2.cvtColor(img37, cv2.COLOR_BGR2HSV)
 m37 = cv2.inRange(hsv37, np.array([15, 80, 80]), np.array([35, 255, 255]))
 bg37 = cv2.bitwise_and(img37, img37, mask=cv2.bitwise_not(m37))
@@ -474,12 +480,12 @@ make_observation_card(37, "Subtract Foreground Based on Color",
                       img37, bg37, "Successfully isolated background by subtracting foreground yellow color regions.")
 
 # EXP 38: Count Number of Faces
-img38 = cv2.imread("sample_exp38_face_count.jpg")
+img38 = cv2.imread(get_input("sample_exp38_face_count.jpg"))
 fc38 = img38.copy()
 h38, w38 = img38.shape[:2]
 face_cnt = 0
-if hasattr(cv2, 'FaceDetectorYN_create') and os.path.exists("yunet.onnx"):
-    det38 = cv2.FaceDetectorYN_create("yunet.onnx", "", (w38, h38), score_threshold=0.3, nms_threshold=0.3)
+if hasattr(cv2, 'FaceDetectorYN_create') and os.path.exists(get_input("yunet.onnx")):
+    det38 = cv2.FaceDetectorYN_create(get_input("yunet.onnx"), "", (w38, h38), score_threshold=0.3, nms_threshold=0.3)
     _, f_res38 = det38.detect(img38)
     if f_res38 is not None:
         for idx, f in enumerate(f_res38):
@@ -494,7 +500,7 @@ make_observation_card(38, "Count Number of Faces",
                       img38, fc38, f"Successfully identified, localized, and counted all {face_cnt} faces in group photo.")
 
 # EXP 39: Play Video Reverse Slow
-cap39 = cv2.VideoCapture("sample_exp39_slow_reverse.mp4")
+cap39 = cv2.VideoCapture(get_input("sample_exp39_slow_reverse.mp4"))
 ret39, f39_start = cap39.read()
 f39_end = f39_start.copy()
 while cap39.isOpened():
@@ -511,7 +517,7 @@ make_observation_card(39, "Video Reverse Mode in Slow Motion",
                       input_label="INITIAL FRAME (FORWARD)", output_label="REVERSE SLOW PLAYBACK FRAME")
 
 # EXP 40: Extract Text from Video
-cap40 = cv2.VideoCapture("sample_exp40_text_video.mp4")
+cap40 = cv2.VideoCapture(get_input("sample_exp40_text_video.mp4"))
 ret40, f40 = cap40.read()
 # Seek to frame 20 with text
 for _ in range(20):

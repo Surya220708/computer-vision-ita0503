@@ -6,10 +6,15 @@ Comprehensive implementation and verified observation results for all 40 experim
 
 ## 📁 Repository Structure
 
-The repository is cleanly organized with dedicated directories for programs and output screenshots:
+The repository is cleanly organized with dedicated directories for inputs, programs, and outputs:
 
 ```
 computer-vision/
+├── input/                   # Dedicated directory containing all sample images, videos & models
+│   ├── sample.jpg
+│   ├── sample_exp11_rotate180.jpg ... sample_exp40_text_video.mp4
+│   ├── yunet.onnx           # High-precision YuNet face detector model
+│   └── haarcascades/        # Pre-trained Haar Cascade XML classifiers
 ├── program/                 # Dedicated directory containing all 40 Python programs
 │   ├── program_01_grayscale.py
 │   ├── program_02_gaussian_blur.py
@@ -21,9 +26,7 @@ computer-vision/
 │   ├── ...
 │   ├── exp_40_result.png
 │   └── index.html           # Interactive visual observation gallery
-├── haarcascades/            # Pre-trained Haar Cascade XML classifiers
-├── yunet.onnx               # High-precision YuNet face detector model
-├── sample_exp*.jpg / .mp4   # Sourced thematic test images and video clips (Exp 11 - 40)
+├── docs/                    # Laboratory observation manual & curriculum reference
 ├── create_catalog.py        # Automated Markdown and HTML gallery generator
 ├── create_observation_results.py # Observation card generator
 ├── OBSERVATION_RESULTS.md   # Full documentation with embedded screenshot cards
@@ -103,3 +106,4 @@ All resulting output images and processed videos are automatically saved into th
 
 ### Viewing Observation Screenshots
 Open [`output/index.html`](output/index.html) in any web browser to view the interactive gallery of all 40 verified experiment cards, or browse [`OBSERVATION_RESULTS.md`](OBSERVATION_RESULTS.md).
+
